@@ -1,23 +1,12 @@
 /**
  * [contextual.js]{@link https://github.com/ia74/contextual}
  * @author ia74
- * @version 1.1.0
- */
-
-/**
- * 
- * Idea: Harbor and display HTML views. We will need to add extra tags.
- */
-
-/**
- * [contextual.js]{@link https://github.com/ia74/contextual}
- * @author ia74
- * @version 1.1.p0
+ * @version 2.0.0
  */
 const ctxl = {
 	view_container: "#ctxl-view-cont",
 	as: "html",
-	version: "1.0.0",
+	version: "2.0.0",
 	loadingHTML: "Loading a view...",
 	views: [],
 	addView: (view) => {
@@ -86,45 +75,36 @@ const ctxl = {
 		return view_container;
 	},
 	nonDestructiveView: (view) => {
-		if (!document.querySelector(ctxl.view_container))
-			document.body.appendChild(ctxl.createViewContainer());
-		if (document.querySelector(`${ctxl.as}[ctxl-id="${view}`))
-			document
-				.querySelector(ctxl.view_container)
-				.replaceChild(
-					document.querySelector(`${ctxl.as}[ctxl-id="${view}"]`),
-					ctxl.generateView(view),
-				);
+		ctxl.forceViewContainer();
+		const lookupExistingView = document.querySelector(`${ctxl.as}[ctxl-id="${view}`)
+		if (lookupExistingView)
+			ctxl.viewContainer().replaceChild(lookupExistingView,ctxl.generateView(view),);
 		else
-			document
-				.querySelector(ctxl.view_container)
-				.appendChild(ctxl.generateView(view));
+			ctxl.viewContainer().appendChild(ctxl.generateView(view));
 		ctxl.opened.push(view);
 	},
+	destructiveView: (view) => {
+		ctxl.forceViewContainer();
+		ctxl.viewContainer().innerHTML = "";
+		ctxl.viewContainer().appendChild(ctxl.generateView(view));
+		ctxl.opened = [view];
+	},
+	forceViewContainer: () => {
+		if (!document.querySelector(ctxl.view_container)) document.body.appendChild(ctxl.createViewContainer());
+	},
+	viewContainer: () => document.querySelector(ctxl.view_container),
 	reloadView: (view) => {
-		if (!document.querySelector(ctxl.view_container))
-			document.body.appendChild(ctxl.createViewContainer());
+		ctxl.forceViewContainer();
 		if (ctxl.onclose[view]) ctxl.onclose[view]();
 		if (ctxl.onclose[view]) delete ctxl.onclose[view];
-		const scripts = document.querySelectorAll(`.ctxv${view}`);
+		const scripts = document.querySelectorAll(`script[ctxl-id="${view}"]`);
 		for (let i = 0; i < scripts.length; i++) {
 			scripts[i].remove();
 		}
-		document
-			.querySelector(ctxl.view_container)
-			.replaceChild(
+		ctxl.viewContainer().replaceChild(
 				ctxl.generateView(view),
 				document.querySelector(`${ctxl.as}[ctxl-id="${view}"]`),
 			);
-	},
-	destructiveView: (view) => {
-		if (!document.querySelector(ctxl.view_container))
-			document.body.appendChild(ctxl.createViewContainer());
-		document.querySelector(ctxl.view_container).innerHTML = "";
-		document
-			.querySelector(ctxl.view_container)
-			.appendChild(ctxl.generateView(view));
-		ctxl.opened = [view];
 	},
 	waitForClose: async (view) =>
 		new Promise((resolve, reject) => {
