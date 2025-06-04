@@ -1,0 +1,24 @@
+<!--
+Custom attributes CTXL supports are:
+- ctxl-import: Mark this script to be imported with the "src" attribute
+- ctxl-block: Waits for the script to fully load before continuing to add any other
+- ctxl-cjs: Mark this script to be executed as a CommonJS file, not an ESM module like default
+
+-->
+
+<!-- You must mark src="" scripts with ctxl-import for them to get picked up -->
+<script ctxl-import src="..."></script>
+<!-- If you MUST block, meaning this script is ABSOLUTELY ESSENTIAL FOR YOUR VIEW TO FUNCTION, 
+you can block the further loading of the view's scripts until it fully loads by adding ctxl-block -->
+<script ctxl-block ctxl-import src="https://cdn.jsdelivr.net/npm/js-md5@0.8.3/src/md5.min.js"></script>
+
+<!-- You can also make the behemoth. -->
+<script ctxl-cjs ctxl-block ctxl-import src="..."></script>
+
+<!-- And here's inline examples. -->
+<script ctxl-cjs>
+  console.log("I'm Inline CommonJS", md5("CommonJS"))
+</script>
+<script>
+  console.log("I'm Inline ESM", md5("CommonJS"))
+</script>

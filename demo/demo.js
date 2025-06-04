@@ -1,6 +1,7 @@
 import ctxl from '../contextual.js'; // Import CTXL
 
 // We need to add our view to the list
+ctxl.addView('dependencyImporting') // It's in views/coolView.html!
 ctxl.addView('coolView') // It's in views/coolView.html!
 ctxl.addView('otherCoolView') // It's in views/otherCoolView.html!
 
@@ -9,6 +10,7 @@ ctxl.destructiveView('coolView') // This destroys the innerHTML of the container
 
 // And since we want to add the other cool view on top,
 ctxl.nonDestructiveView('otherCoolView') // This just appends the view to the container.
+ctxl.nonDestructiveView('dependencyImporting') // This just appends the view to the container.
 
 // If we want to reload a view, we can do this:
 ctxl.reloadView('coolView') // This will reload the view *in place*, and reload all scripts that were added to the document.
